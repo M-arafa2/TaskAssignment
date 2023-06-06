@@ -1,0 +1,61 @@
+/* index page */
+#card {
+    margin: 3%;
+
+}
+
+.cardcontr {
+    margin-left: 5%;
+    font-weight: bold;
+    text-align: center;
+
+}
+
+.checkboxs {
+
+    display: flex;
+    justify-content: left;
+
+}
+
+.controllers {
+    margin: 3%;
+    display: flex;
+    float: right;
+
+
+}
+
+#header {
+    display: flex;
+}
+
+#index-head {
+    display: flex;
+    margin: 3%;
+    float: left;
+
+}
+
+#add {
+    margin-right: 1%;
+}
+
+/*form page*/
+.container {
+    text-align: center;
+}
+
+#furnitureForm,
+#dvdForm,
+#bookForm {
+    display: none;
+}
+
+#notifi {
+    display: none;
+}
+
+#form-head {
+    margin: 5%;
+}

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+
+<body>
+    <div class="container">
+
+
+        <form action="form.controller.php" onsubmit="return validateForm()" method="post" id="product_form">
+            <h1 id="form-head">Product Add</h1>
+            <div class="alert alert-warning" role="alert" id="notifi">
+
+            </div>
+            <label for="sku">SKU</label>
+            <input type="text" id="sku" name="sku">
+            <br>
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name">
+            <br>
+            <label for="price">Price($)</label>
+            <input type="number" id="price" name="price" min="0.01" step=".01">
+            <br>
+            <label for="productType">Type Switcher</label>
+            <select name="productType" id="productType">
+                <option value="typeSwitcher" selected="selected">TypeSwitcher</option>
+                <option value="dvd" id="DVD">DVD</option>
+                <option value="furniture" id="Furniture">Furniture</option>
+                <option value="book" id="Book">Book</option>
+            </select>
+            <div id="dvdForm">
+                <br>
+                <label for="size">size(MG)</label>
+                <input type="number" id="size" name="size" min="1">
+                <small class="form-text text-muted">Please,provide size</small>
+                <br>
+            </div>
+            <div id="furnitureForm">
+                <br>
+                <label for="height">Height(CM)</label>
+                <input type="number" id="height" name="height" min="1">
+                <br>
+                <label for="width">Width(CM)</label>
+                <input type="number" id="width" name="width" min="1">
+                <br>
+                <label for="length">Length(CM)</label>
+                <input type="number" id="length" name="length" min="1">
+                <small class="form-text text-muted">Please,provide dimensions</small>
+                <br>
+            </div>
+            <div id="bookForm">
+                <br>
+                <label for="weight">Weight(KG)</label>
+                <input type="number" id="weight" name="weight" min="1">
+                <small class="form-text text-muted">Please,provide weight</small>
+                <br>
+            </div>
+            <div class="">
+
+                <button type="number" name="submit" class="btn btn-dark">Save</button>
+                <button type="button" id="cancel" class="btn btn-dark ">Cancel</button>
+            </div>
+
+        </form>
+        <script>
+            const btn = document.getElementById("cancel");
+            const dvdForm = document.getElementById("dvdForm");
+            const furnitureForm = document.getElementById("furnitureForm");
+            const bookForm = document.getElementById("bookForm");
+            const selectElement = document.getElementById("productType");
+            const sku = document.getElementById("sku");
+            const name = document.getElementById("name");
+            const price = document.getElementById("price");
+            const size = document.getElementById("size");
+            const height = document.getElementById("height");
+            const width = document.getElementById("width");
+            const length = document.getElementById("length");
+            const weight = document.getElementById("weight");
+            const notifi = document.getElementById("notifi");
+            // cancel button redirect to main page/index
+            btn.addEventListener('click', function () {
+                document.location.href = '/scandiweb';
+            });
+            // display and undisplay form parts bassed on type selected
+            selectElement.addEventListener("change", function () {
+                if (this.value == "dvd") {
+                    dvdForm.style.display = "block";
+                    furnitureForm.style.display = "none";
+                    bookForm.style.display = "none";
+
+                } else if (this.value == "furniture") {
+                    dvdForm.style.display = "none";
+                    furnitureForm.style.display = "block";
+                    bookForm.style.display = "none";
+                } else if (this.value == "book") {
+                    dvdForm.style.display = "none";
+                    furnitureForm.style.display = "none";
+                    bookForm.style.display = "block";
+                } else {
+                    dvdForm.style.display = "none";
+                    furnitureForm.style.display = "none";
+                    bookForm.style.display = "none";
+                }
+            });
+            // validate if all fields are filled and sku doesnt already exist
+            function validateForm() {
+                if (selectElement.value == "typeSwitcher") {
+                    notifiFunc("Please, submit required data");
+                    return false;
+                } else if (sku.value == "" || name.value == "" || price.value == "") {
+                    notifiFunc("Please, submit required data");
+                    return false;
+                } else if (selectElement.value == "dvd" && size.value == "") {
+                    notifiFunc("Please, submit required data");
+                    return false;
+                } else if (selectElement.value == "furniture" &&
+                    (height.value == "" || width.value == "" || length.value == "")) {
+                    notifiFunc("Please, submit required data");
+                    return false;
+                } else if (selectElement.value == "book" && weight.value == "") {
+                    notifiFunc("Please, submit required data");
+                    return false;
+                }
+
+                if (ValidateSku(sku.value)) {
+                    notifiFunc("SKU Already Exists");
+                    return false;
+                }
+
+
+
+            }
+            // sending get request for sku to check if it exists
+            //synchronous so it awaits response
+            function ValidateSku(skuValue) {
+                const xmlhttp = new XMLHttpRequest();
+                let resp;
+                xmlhttp.onreadystatechange = function () {
+                    if (this.readyState == 4 && this.status == 200) {
+                        if (this.responseText == skuValue) {
+                            resp = true;
+                        } else {
+                            resp = false;
+                        }
+                    }
+                };
+                xmlhttp.open("GET", "form.validator.controller.php?q=" + skuValue, false);
+                xmlhttp.send();
+                return resp;
+            };
+            // this function takes text as argument and show it as norification for 6 seconds
+            function notifiFunc(text) {
+                notifi.innerHTML = text;
+                notifi.style.display = "block";
+                setTimeout(function () {
+                    notifi.style.display = "none";
+                    notifi.innerHTML = "";
+                }, 6000);
+
+            }
+
+        </script>
+        <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+            integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+            crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+            crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js"
+            integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+            crossorigin="anonymous"></script>
+    </div>
+</body>
+
+
+</html>
