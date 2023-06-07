@@ -1,6 +1,6 @@
 <?php
 
-include 'product.class.php';
+include 'autoloader.php';
 // receiving the array of selected products/checkboxs sku
 $data = json_decode(file_get_contents("php://input"), true);
 $model = new model();

@@ -1,7 +1,7 @@
 <?php
 
-include 'product.class.php';
-echo "<link rel='stylesheet' type='text/css' href='style.css' />";
+include 'autoloader.php';
+echo "<link rel='stylesheet' type='text/css' href='assets/style.css' />";
 ?>
 <html>
   <head>
