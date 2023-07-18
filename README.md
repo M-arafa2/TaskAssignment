@@ -1,2 +1,6 @@
 # TaskAssignment
-project built with html css bootstrap js php and mysql
+task was to build simple site using js and php with no external libraries.
+applying oop (classes-inheritance-polymorphism through abstract classes)
+applying psr standards.
+building custom ORM to save and retrieve data as objects(classes instances).
+
